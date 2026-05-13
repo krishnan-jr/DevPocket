@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevPocket — Developer Utility Toolbox</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- CDN Libraries (order matters) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/diff/5.1.0/diff.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon"><i data-lucide="zap" class="dp-icon"></i></span>
+          <span class="logo-text">DevPocket</span>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><i data-lucide="panel-left" class="dp-icon"></i></button>
+      </div>
+
+      <div class="sidebar-search">
+        <input type="text" id="toolSearch" placeholder="Search tools… (⌘K)" aria-label="Search tools" autocomplete="off" />
+        <span class="search-icon"><i data-lucide="search" class="dp-icon"></i></span>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebarNav" aria-label="Tools navigation"></nav>
+
+      <div class="sidebar-footer">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span class="theme-icon"><i data-lucide="moon" class="dp-icon"></i></span>
+          <span class="theme-label">Light Mode</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+      <div class="top-bar">
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu"><i data-lucide="menu" class="dp-icon"></i></button>
+        <div class="breadcrumb" id="breadcrumb"><span>DevPocket</span></div>
+        <div class="top-actions">
+          <button class="btn-icon" id="favBtn" title="Favorite this tool" aria-label="Favorite"><i data-lucide="star" class="dp-icon"></i></button>
+        </div>
+      </div>
+
+      <div class="tool-area" id="toolArea">
+        <div class="welcome-screen" id="welcomeScreen">
+          <div class="welcome-content">
+            <div class="welcome-icon"><i data-lucide="zap" class="dp-icon"></i></div>
+            <h1>DevPocket</h1>
+            <p>Your all-in-one developer utility toolbox. Fast, local, private.</p>
+            <div class="welcome-stats">
+              <div class="stat"><strong id="toolCount">0</strong><span>Tools</span></div>
+              <div class="stat"><strong>9</strong><span>Categories</span></div>
+              <div class="stat"><strong>100%</strong><span>Offline</span></div>
+            </div>
+            <p class="welcome-hint">Use <kbd>⌘K</kbd> to search or click any tool in the sidebar.</p>
+          </div>
+        </div>
+        <div class="tool-content hidden" id="toolContent"></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- App core must load first so DevPocket global exists for tool files -->
+  <script src="app.js"></script>
+  <!-- Tool modules (each calls DevPocket.registerCategory / registerTool) -->
+  <script src="tools-text.js"></script>
+  <script src="tools-encoding.js"></script>
+  <script src="tools-json.js"></script>
+  <script src="tools-jwt.js"></script>
+  <script src="tools-dev.js"></script>
+  <script src="tools-web.js"></script>
+  <script src="tools-file.js"></script>
+  <script src="tools-api.js"></script>
+</body>
+</html>
