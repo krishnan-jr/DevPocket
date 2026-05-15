@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DevPocket — Developer Utility Toolbox</title>
+  <meta name="description" content="All-in-one developer utility toolbox. Fast, local, private." />
+  <meta name="theme-color" content="#4f8ef7" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="DevPocket" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
   <link rel="stylesheet" href="style.css" />
   <!-- CDN Libraries (order matters) -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
@@ -75,6 +84,13 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- App core must load first so DevPocket global exists for tool files -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () =>
+        navigator.serviceWorker.register('./sw.js').catch(() => {})
+      );
+    }
+  </script>
   <script src="app.js"></script>
   <!-- Tool modules (each calls DevPocket.registerCategory / registerTool) -->
   <script src="tools-text.js"></script>

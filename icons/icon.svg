@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#0d0f14"/>
+  <rect width="512" height="512" rx="112" fill="url(#grad)" opacity="0.6"/>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f8ef7" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#7c5ef7" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+  <!-- Zap / lightning bolt -->
+  <path d="M296 80 L176 280 H256 L216 432 L336 232 H256 Z"
+        fill="#4f8ef7"
+        stroke="#6ba3ff"
+        stroke-width="4"
+        stroke-linejoin="round"/>
+</svg>

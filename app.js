@@ -29,7 +29,8 @@ const DevPocket = (() => {
     try {
       _favorites = JSON.parse(localStorage.getItem('dp_fav') || '[]');
       _recent    = JSON.parse(localStorage.getItem('dp_recent') || '[]');
-      const last = localStorage.getItem('dp_last');
+      const urlTool = new URLSearchParams(location.search).get('tool');
+      const last    = urlTool || localStorage.getItem('dp_last');
       if (last && _tools.find(t => t.id === last)) navigateTo(last);
     } catch(_) {}
   }

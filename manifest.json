@@ -1,0 +1,44 @@
+{
+  "name": "DevPocket",
+  "short_name": "DevPocket",
+  "description": "All-in-one developer utility toolbox. Fast, local, private.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d0f14",
+  "theme_color": "#4f8ef7",
+  "categories": ["developer", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "JSON Formatter",
+      "url": "./?tool=json-format",
+      "description": "Format and validate JSON"
+    },
+    {
+      "name": "Base64 Encode/Decode",
+      "url": "./?tool=base64",
+      "description": "Encode or decode Base64"
+    },
+    {
+      "name": "UUID Generator",
+      "url": "./?tool=uuid",
+      "description": "Generate RFC 4122 v4 UUIDs"
+    }
+  ]
+}
