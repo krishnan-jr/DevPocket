@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_VERSION = 'devpocket-v1';
+const CACHE_VERSION = 'devpocket-v2';
 
 const LOCAL_ASSETS = [
   './',
@@ -25,7 +25,7 @@ const CDN_ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/diff/5.1.0/diff.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js',
 ];
 
 // ---- Install: pre-cache all assets ----
@@ -35,8 +35,8 @@ self.addEventListener('install', event => {
       Promise.allSettled([
         cache.addAll(LOCAL_ASSETS),
         ...CDN_ASSETS.map(url =>
-          fetch(url, { mode: 'cors' })
-            .then(res => res.ok ? cache.put(url, res) : null)
+          fetch(url, { mode: 'cors', credentials: 'omit' })
+            .then(res => res.ok ? cache.put(url, res.clone()) : null)
             .catch(() => null)
         ),
       ])
@@ -84,11 +84,13 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       caches.open(CACHE_VERSION).then(cache =>
         cache.match(request).then(cached => {
-          const fetchPromise = fetch(request, { mode: 'cors' }).then(res => {
+          const fetchPromise = fetch(request.url, { mode: 'cors', credentials: 'omit' }).then(res => {
             if (res && res.ok) cache.put(request, res.clone());
             return res;
           }).catch(() => null);
-          return cached || fetchPromise;
+          return cached || fetchPromise.then(res =>
+            res || new Response('', { status: 504, statusText: 'CDN unavailable' })
+          );
         })
       )
     );
