@@ -218,6 +218,27 @@ DevPocket.registerTool({
             <div class="diff-container" id="tdSideR" style="padding:12px;min-height:80px;"></div>
           </div>`
         },
+        {
+          id: 'analysis', label: 'Advanced Analysis',
+          content: `
+            <div class="stats-row" style="flex-wrap:wrap">
+              ${DevPocket.ui.statChip('Lines Added', 'tdAdd')}
+              ${DevPocket.ui.statChip('Lines Removed', 'tdDel')}
+              ${DevPocket.ui.statChip('Lines Unchanged', 'tdUnch')}
+              ${DevPocket.ui.statChip('Change Ratio', 'tdRatio')}
+              ${DevPocket.ui.statChip('Similarity', 'tdSim')}
+            </div>
+            <div id="tdSimBar" style="margin:10px 0;">
+              <div style="height:8px;width:100%;background:var(--border,rgba(128,128,128,0.2));border-radius:4px;overflow:hidden;">
+                <div id="tdSimFill" style="height:100%;width:0%;background:var(--success,rgba(76,175,125,0.8));transition:width .3s;"></div>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:8px;">
+              <label class="form-label">Most Changed Lines</label>
+              <div class="diff-container" id="tdHot" style="padding:12px;min-height:80px;max-height:320px;overflow:auto;"></div>
+            </div>
+          `
+        },
       ])}
     `));
 
@@ -253,12 +274,70 @@ DevPocket.registerTool({
         else if (part.removed) sideL.appendChild(div);
         else { sideL.appendChild(div); sideR.appendChild(div.cloneNode(true)); }
       });
+
+      renderAnalysis(left, right);
+    }
+
+    function renderAnalysis(left, right) {
+      let added = 0, removed = 0, unchanged = 0;
+      const lines = Diff.diffLines(left, right);
+
+      lines.forEach(part => {
+        if (part.added) added += part.count;
+        else if (part.removed) removed += part.count;
+        else unchanged += part.count;
+      });
+
+      const total = Math.max(1, added + removed + unchanged);
+      const changeRatio = ((added + removed) / total * 100).toFixed(1);
+
+      const l = left.split(/\r?\n/).filter(Boolean);
+      const r = right.split(/\r?\n/).filter(Boolean);
+      const maxLen = Math.max(l.length, r.length);
+      let sim = 100;
+      if (maxLen === 0) {
+        sim = l.length === r.length ? 100 : 0;
+      } else {
+        sim = (1 - Math.abs(l.length - r.length) / maxLen) * 100;
+      }
+
+      const n = (v) => container.querySelector(v);
+      n('#tdAdd').textContent = added;
+      n('#tdDel').textContent = removed;
+      n('#tdUnch').textContent = unchanged;
+      n('#tdRatio').textContent = changeRatio + '%';
+      n('#tdSim').textContent = sim.toFixed(1) + '%';
+      n('#tdSimFill').style.width = sim.toFixed(1) + '%';
+
+      const hot = container.querySelector('#tdHot');
+      hot.innerHTML = '';
+
+      const scored = lines
+        .map(part => ({ text: part.value.trimEnd(), type: part.added ? 'added' : part.removed ? 'removed' : 'unchanged', n: part.count || 0 }))
+        .filter(l => l.text.length > 0)
+        .sort((a, b) => b.n - a.n)
+        .slice(0, 20);
+
+      if (scored.length === 0) {
+        hot.textContent = 'No differences.';
+        return;
+      }
+
+      scored.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'diff-line ' + item.type;
+        div.style.cssText = 'font-family:var(--font-mono,monospace);padding:2px 6px;';
+        div.title = item.type === 'added' ? 'Added' : item.type === 'removed' ? 'Removed' : 'Unchanged';
+        div.textContent = item.text.length > 120 ? item.text.slice(0, 120) + '…' : item.text;
+        hot.appendChild(div);
+      });
     }
 
     container.querySelector('#tdCompare').addEventListener('click', renderDiff);
     container.querySelector('#tdClear').addEventListener('click', () => {
       ['#tdLeft','#tdRight'].forEach(s => container.querySelector(s).value = '');
-      ['#tdInline','#tdSideL','#tdSideR'].forEach(s => { container.querySelector(s).innerHTML = ''; });
+      ['#tdInline','#tdSideL','#tdSideR','#tdHot'].forEach(s => { container.querySelector(s).innerHTML = ''; });
+      ['#tdAdd','#tdDel','#tdUnch','#tdRatio','#tdSim'].forEach(s => container.querySelector(s).textContent = '—');
     });
   }
 });
